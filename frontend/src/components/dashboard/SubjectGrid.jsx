@@ -1,12 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import { Book, Clock, ArrowRight } from "lucide-react";
+import { Book, Clock, ArrowRight, Trash2 } from "lucide-react";
 
-export default function SubjectGrid({ subjects, onAddClick }) {
+export default function SubjectGrid({ subjects, onAddClick, onDeleteSubject }) {
   const navigate = useNavigate();
 
   const handleCardClick = (subject) => {
     // This sends the user to the Study Lab and passes the subject data along with them!
     navigate("/lab", { state: { subject } });
+  };
+
+  const handleDeleteClick = (e, subjectId) => {
+    e.stopPropagation(); // Prevent card click when delete button is clicked
+    if (onDeleteSubject) {
+      onDeleteSubject(subjectId);
+    }
   };
 
   return (
@@ -17,10 +24,19 @@ export default function SubjectGrid({ subjects, onAddClick }) {
           <div
             key={sub._id}
             onClick={() => handleCardClick(sub)}
-            className="bg-slate-800/50 border border-slate-700 p-5 rounded-xl hover:border-brand-accent transition cursor-pointer group flex flex-col h-full"
+            className="bg-slate-800/50 border border-slate-700 p-5 rounded-xl hover:border-brand-accent transition cursor-pointer group flex flex-col h-full relative"
           >
+            {/* Delete Button */}
+            <button
+              onClick={(e) => handleDeleteClick(e, sub._id)}
+              className="absolute top-3 right-3 p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+              title="Delete subject"
+            >
+              <Trash2 size={16} />
+            </button>
+
             <div className="flex-1">
-              <h3 className="text-lg font-medium mb-2 group-hover:text-brand-accent transition-colors">
+              <h3 className="text-lg font-medium mb-2 group-hover:text-brand-accent transition-colors pr-8">
                 {sub.name}
               </h3>
 

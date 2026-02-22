@@ -3,12 +3,12 @@ const path = require("path");
 
 // Set storage engine
 const storage = multer.diskStorage({
-  destination: "./uploads/",
+  destination: path.join(__dirname, "../uploads/"),
   filename: function (req, file, cb) {
-    // Save file as: subjectID-timestamp.pdf
+    // Save file as: pdf-timestamp.pdf
     cb(
       null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname),
+      "pdf-" + Date.now() + path.extname(file.originalname),
     );
   },
 });
@@ -16,15 +16,21 @@ const storage = multer.diskStorage({
 // Initialize upload
 const upload = multer({
   storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: function (req, file, cb) {
+    console.log("File upload attempt:", file);
     const filetypes = /pdf/;
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase(),
     );
-    if (extname) {
+    const mimetype = filetypes.test(file.mimetype);
+
+    console.log("File extname check:", extname, "mimetype check:", mimetype);
+
+    if (extname && mimetype) {
       return cb(null, true);
     } else {
-      cb("Error: PDFs Only!");
+      cb(new Error("Only PDF files are allowed"));
     }
   },
 });

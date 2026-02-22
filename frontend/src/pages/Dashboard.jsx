@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import StatCards from "../components/dashboard/StatCards"
 import SubjectGrid from "../components/dashboard/SubjectGrid";
 import Modal from "../components/shared/Modal"
-import { fetchSubjects } from "../services/api";
+import { fetchSubjects, deleteSubject } from "../services/api";
 
 // ... keep the rest of your export default function Dashboard() code below ...
 
@@ -16,6 +16,19 @@ export default function Dashboard() {
       setSubjects(response.data);
     } catch (err) {
       console.error("Failed to fetch subjects", err);
+    }
+  };
+
+  const handleDeleteSubject = async (subjectId) => {
+    if (window.confirm("Are you sure you want to delete this subject? This action cannot be undone.")) {
+      try {
+        await deleteSubject(subjectId);
+        // Remove the subject from the local state
+        setSubjects(subjects.filter(sub => sub._id !== subjectId));
+      } catch (err) {
+        console.error("Failed to delete subject", err);
+        alert("Failed to delete subject. Please try again.");
+      }
     }
   };
 
@@ -40,6 +53,7 @@ export default function Dashboard() {
       <SubjectGrid
         subjects={subjects}
         onAddClick={() => setIsModalOpen(true)}
+        onDeleteSubject={handleDeleteSubject}
       />
 
       <Modal

@@ -8,7 +8,7 @@ import Planner from './pages/Planner';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/AI-in-Education-Skilling">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />

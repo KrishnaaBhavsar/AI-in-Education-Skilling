@@ -10,5 +10,7 @@ export const createSubject = (formData) =>
     headers: { "Content-Type": "multipart/form-data" },
   });
 
+export const deleteSubject = (subjectId) => API.delete(`/subjects/${subjectId}`);
+
 // Chat API call to connect to your Gemini backend
 export const sendChatMessage = (message) => API.post("/chat", { message });

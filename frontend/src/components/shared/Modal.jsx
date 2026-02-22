@@ -10,16 +10,19 @@ export default function Modal({ isOpen, onClose, onSubjectAdded }) {
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
+    console.log("handleSubmit called with name:", name, "file:", file);
     if (!name.trim()) return alert("Please enter a subject name");
     if (!file) return alert("Please upload a PDF study material");
 
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("pdf", file); // 'pdf' must match the backend upload.single('pdf')
+    formData.append("pdf", file);
 
+    console.log("Sending FormData:", formData);
     setLoading(true);
     try {
-      await createSubject(formData);
+      const response = await createSubject(formData);
+      console.log("Subject created successfully:", response);
       setName("");
       setFile(null);
       onSubjectAdded();
@@ -68,7 +71,11 @@ export default function Modal({ isOpen, onClose, onSubjectAdded }) {
                 type="file"
                 accept="application/pdf"
                 className="hidden"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => {
+                  const selectedFile = e.target.files[0];
+                  console.log("Selected file:", selectedFile);
+                  setFile(selectedFile);
+                }}
               />
               {file ? (
                 <div className="flex items-center gap-2 text-brand-accent">
